@@ -28,7 +28,7 @@ Command line arguments:
 If you have less than 10 matrix multiply jobs and your matrices are <=64 in size, you might get better performance if you set this to 0. This options should not affect the end result but it affects performance. Default is 1. 
 
 -blockSize : This is kernel level option. If you set highCompute to 0, this is always 32 and is ignored. Otherwise, options are: 
-16, 32, 64, 96, 128. If your matrices are at least of size 128, set this to 128. If you have small matrices, setting this to small values might give better results. Default is 128.
+16, 32, 64, 96, 128. If your matrices are at least of size 128, set this to 128. If you have small matrices, setting this to small values might give better throughput. This dictates how many outputs are produced within 1 thread (more outputs per thread for larger blocks), hence how much instruction-level-parallelism is available. Larger block sizes give better throughput if the overall task is big enough to fill the machine. If it does not fill the machine, smaller block sizes might work better since it parallelizes the work better while comprimising instruction level parallelism. Smaller block sizes are not optimal for large matrices since it doesn't achieve maximum throughput. Default is 128.
 
 -nIter : Number of repetitions for the job (repeats the whole job nIter times). Larger nIter is useful to have a statistically robust performance measure. If you set nIter to 30 and numOfTasks to 100, then it will execute 30 jobs in a for loop, where each
 job consists of 100 independent concurrent matrix multiply operations. Default is 30. 
