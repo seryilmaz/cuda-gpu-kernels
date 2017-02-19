@@ -42,4 +42,7 @@ job consists of 100 independent concurrent matrix multiply operations. Default i
 -checkCorrectness : Set to 1 if you would like to have the result from GPU to be compared to result from CPU. Set to 0 if you don't want the comparison. Setting this to 1 will result in longer execution. A good method is setting this to 1 for new matrix
 sizes or numOfTasks when the settings are used the first time to make sure GPU gives correct results; and setting it to 0 when the same settings are used again. Default is 0.
 
+Example usage:
+ ./multiMatrixMul -hA 256 -wA 2560 -wB 256 -numOfTasks 100 -blockSize 128 -highCompute 1 -nIter 30 -checkCorrectness 0
+
 
