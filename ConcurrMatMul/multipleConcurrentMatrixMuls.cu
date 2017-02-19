@@ -809,7 +809,7 @@ int main(int argc, char **argv)
     if(string(argv[i]) == "-highCompute") highCompute = atoi(argv[i+1]);
     if(string(argv[i]) == "-blockSize") blockSize = atoi(argv[i+1]);  
     if(string(argv[i]) == "-nIter") nIter = atoi(argv[i+1]);
-    if(string(argv[i]) == "-checkCorrectness") nIter = atoi(argv[i+1]);
+    if(string(argv[i]) == "-checkCorrectness") checkCorrectness = atoi(argv[i+1]);
   }
 
   int succ = matMulGPU(hA,wA,wB,num, highCompute, blockSize, nIter, checkCorrectness);
