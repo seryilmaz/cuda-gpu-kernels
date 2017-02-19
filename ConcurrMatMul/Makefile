@@ -1,3 +1,5 @@
+###This makefile is produced after editing an NVIDIA provided Makefile sample###
+####See the following copyright notice##########################################
 ################################################################################
 #
 # Copyright 1993-2015 NVIDIA Corporation.  All rights reserved.
