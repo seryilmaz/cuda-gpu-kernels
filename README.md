@@ -1,7 +1,7 @@
 # cuda-gpu-kernels
 Custom GPU kernels written in CUDA
 
-Includes custom kernels that can perform multiple independent matrix multiply tasks concurrently on GPU. This is functionally similar to cublasSgemmBatched but with no extra kernel launch overhead. This code performs better than cublasSgemmBatched in most cases when matrix sizes are <= ~256 (or more generally when kernel launch overhead is significant compared to 1 matrix multiply task). Note that this code is suboptimal for large matrices (>=1024) and although it can reach up to 78% of peak throughput for large matrices (1.12 TFLOPS on Quadro K2200, where the peak is 1.44 TFLOPS), it is still ~10-15% worse than cublasSgemm for large enough matrices. On the other hand, this code is very efficient when the task consists of many independent matrix multiply jobs. For the extreme case when the matrix sizes are ~32, this code performs ~10x better than cudaSgemmBatched with many matrix multiply tasks.
+Includes custom kernels that can perform multiple independent matrix multiply tasks concurrently on GPU. This is functionally similar to cublasSgemmBatched but with no extra kernel launch overhead. This code performs better than cublasSgemmBatched in most cases when matrix sizes are <= ~256 (or more generally when kernel launch overhead is significant compared to 1 matrix multiply task). Note that this code is suboptimal for large matrices (>=1024) and although it can reach up to 78% of peak throughput for large matrices (1.12 TFLOPS on Quadro K2200, where the peak is 1.44 TFLOPS), it is still ~10-15% worse than cublasSgemm for large enough matrices. On the other hand, this code is very efficient when the task consists of many independent matrix multiply jobs. For the extreme case when the matrix sizes are ~32, this code performs ~10x better than cudaSgemmBatched with many matrix multiply tasks. If this code is optimized for better throughput with large matrices, it will always be better than cudaSgemmBatched because it won't have kernel launch overhead, but with only very slight advantage for large matrices since kernel launch overhead is much lower than total compute with large matrices.
 
 Many techniques used here are borrowed from V. Volkov et al., GTC, 2010 [http://www.nvidia.com/content/gtc-2010/pdfs/2238_gtc2010.pdf] and from R.  Nath et al., Int’l J. High Performance Computing Application, 2010 [http://journals.sagepub.com/doi/abs/10.1177/1094342010385729].
 
@@ -41,4 +41,20 @@ Example usage:
 Output:
 Performance: 1064.3364 GFLOPS, total time: 945.785 msec, total Ops: 1006.633 Gops
 Comparison of first matrix multiply passed.
+
+Input:  
+./multiMatrixMul -hA 128 -wA 128 -wB 128 -numOfTasks 100 -blockSize 128 -highCompute 1 -nIter 30 -checkCorrectness 0
+Output:
+Performance: 851.3988 GFLOPS, total time: 14.779 msec, total Ops: 12.583 Gops
+
+Same task above gives 769 GFLOPS with cublasSgemmBatched.
+
+Input:
+./multiMatrixMul -hA 32 -wA 32 -wB 32 -numOfTasks 100 -blockSize 32 -highCompute 1 -nIter 30 -checkCorrectness 0
+Output:
+Performance: 275.5034 GFLOPS, total time: 0.714 msec, total Ops: 0.197 Gops
+
+Same task above gives 30.09 GFLOPS with cublasSgemmBatched.
+
+
 
