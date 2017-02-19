@@ -699,7 +699,11 @@ int matMulGPU(int hA,int wA, int wB,int num, bool highCompute, int blockSize, in
     threads.y=4;
     grid.x=wB / 32;
     grid.y=hA / 32;
-    grid.z=num;        
+    grid.z=num;    
+    if( wB%32 != 0 || wB<32 || hA%32 != 0 || hA<32 || wA%32 !=0 || wA<32) {
+      printf("Not a valid matrix size. When -highCompute is 0, all matrix sizes must be multiples of 32\n");
+      return -1;
+    }  
     //do some warmup
     matrixMulCUDA0B<32><<< grid, threads >>>(d_Cl, d_Al, d_Bl, wA,wB);
   } else{
