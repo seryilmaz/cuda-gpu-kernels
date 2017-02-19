@@ -1,7 +1,11 @@
+//This code is produced by Burc Eryilmaz. Please include this notice if you would like to use this code.
+//Minor portions of this code is taken from CUDA 8.0 samples. Some techniques used in different kernels are 
+//taken from Nath et al. and Volkov et al. (see README for more details).
 #include <iostream>
 
 using namespace std;
 
+//this constInit function is from CUDA samples.
 void constInit(float* array, int arraySize){
 
   for(int i=0; i<arraySize; i++){
@@ -122,6 +126,9 @@ matrixMulCUDA0B(float **Cl, float **Al, float **Bl, int wA, int wB)
     for(int i=0; i<8;i+=1) C[c + wB * (ty+4*i) + tx] = Csub[i];
 }
 
+//This kernel employs techniques from 
+//R. Nath et al., Int’l J. High Performance Computing Application, 2010
+//see README for details
 template <int block, int block_iter> __global__ void
 matrixMulCUDA32B(float **Cl, float **Al, float **Bl, int wA, int wB)
 {
@@ -195,7 +202,9 @@ matrixMulCUDA32B(float **Cl, float **Al, float **Bl, int wA, int wB)
     }
 }
 
-
+//This kernel employs techniques from 
+//R. Nath et al., Int’l J. High Performance Computing Application, 2010
+//see README for details
 template <int block, int block_iter> __global__ void
 matrixMulCUDA16B(float **Cl, float **Al, float **Bl, int wA, int wB)
 {
@@ -258,6 +267,9 @@ matrixMulCUDA16B(float **Cl, float **Al, float **Bl, int wA, int wB)
 
 }
 
+//This kernel employs techniques from 
+//R. Nath et al., Int’l J. High Performance Computing Application, 2010
+//see README for details
 template <int block, int block_iter> __global__ void
 matrixMulCUDA64B(float **Cl, float **Al, float **Bl, int wA, int wB)
 {
@@ -349,7 +361,9 @@ matrixMulCUDA64B(float **Cl, float **Al, float **Bl, int wA, int wB)
     }
 }
 
-
+//This kernel employs techniques from 
+//R. Nath et al., Int’l J. High Performance Computing Application, 2010
+//see README for details
 template <int block, int block_iter> __global__ void
 matrixMulCUDA96B(float **Cl, float **Al, float **Bl, int wA, int wB)
 {
@@ -469,7 +483,9 @@ matrixMulCUDA96B(float **Cl, float **Al, float **Bl, int wA, int wB)
     }
 }
 
-
+//This kernel employs techniques from 
+//R. Nath et al., Int’l J. High Performance Computing Application, 2010
+//see README for details
 template <int block, int block_iter> __global__ void
 matrixMulCUDA128B(float **Cl, float **Al, float **Bl, int wA, int wB)
 {
