@@ -645,9 +645,13 @@ matrixMulCUDA128B(float **Cl, float **Al, float **Bl, int wA, int wB)
 }
 
 int matMulGPU(int hA,int wA, int wB,int num, bool highCompute, int blockSize, int nIter, bool checkCorrectness){
-
+  //declare pointers for pointer arrays. Each pointer in those arrays will point to a float array in the host
   float **Al, **Bl, **Cl;
+  //declare pointers for pointer arrays. Each pointer in those arrays will point to a float array in the device
+  //d prefix is for device pointers, and hd are for host pointers. All will point to float arrays in device though.
   float **d_Al, **d_Bl, **d_Cl, **hd_Al, **hd_Bl, **hd_Cl;
+  
+  //Allocate pointer arrays
   Al = (float**) malloc(num*sizeof(float*));
   Bl = (float**) malloc(num*sizeof(float*));
   Cl = (float**) malloc(num*sizeof(float*));
@@ -655,7 +659,8 @@ int matMulGPU(int hA,int wA, int wB,int num, bool highCompute, int blockSize, in
   hd_Al = (float**) malloc(num*sizeof(float*));
   hd_Bl = (float**) malloc(num*sizeof(float*));
   hd_Cl = (float**) malloc(num*sizeof(float*));
-
+  
+  //allocate float arrays pointed by pointers in the arrays declared above
   for(int i=0;i<num;i++){
     Al[i] = (float*) malloc(wA*hA*sizeof(float));
     Bl[i] = (float*) malloc(wA*wB*sizeof(float));
@@ -663,12 +668,14 @@ int matMulGPU(int hA,int wA, int wB,int num, bool highCompute, int blockSize, in
     constInit(Al[i],wA*hA);
     constInit(Bl[i],wA*wB);
   }
-
+  //this will be used to transfer result of first matrix multiply op to host
   float *C2;
   C2 = (float*) malloc(hA*wB*sizeof(float));
+  
+  //compute the result of first matrix multiply op in CPU for comparison
   if(checkCorrectness==1) matMulCPU(Al[0],Bl[0],Cl[0],hA,wA,wB);
 
-  //GPU copies
+  //allocate float arrays in the device
   for(int i=0;i<num;i++){
     cudaMalloc(&(hd_Al[i]),sizeof(float)*wA*hA);
     cudaMalloc(&hd_Bl[i],sizeof(float)*wA*wB);
@@ -683,6 +690,7 @@ int matMulGPU(int hA,int wA, int wB,int num, bool highCompute, int blockSize, in
   cudaMemcpy(d_Bl, hd_Bl, num*sizeof(float*), cudaMemcpyHostToDevice);
   cudaMemcpy(d_Cl, hd_Cl, num*sizeof(float*), cudaMemcpyHostToDevice);
 
+  //declare and initialize threads and grid variables, according to the command line options
   dim3 threads;
   dim3 grid;
   cudaError_t error;
@@ -739,6 +747,7 @@ int matMulGPU(int hA,int wA, int wB,int num, bool highCompute, int blockSize, in
     exit(EXIT_FAILURE);
   }
   
+  //perform computation nIter times
   for (int j = 0; j < nIter; j++)
   {
     if(highCompute==0){
