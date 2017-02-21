@@ -56,5 +56,8 @@ Performance: 275.5034 GFLOPS, total time: 0.714 msec, total Ops: 0.197 Gops
 
 Same task above gives 30.09 GFLOPS with cublasSgemmBatched.
 
+Notes:
+-- If you find that the performance you get is quite lower than what I report here (relative to the peak of your device, of course, not the raw throuhgput number); try being less aggressive in loop unrolling. What I mean by that is try changing  "#pragma unroll 8" into "#pragma unroll" and see if the performance gets better. Since I force compiler to do specific number of unrolls, it might not be optimal in all architectures (it might cause register spilling, for instance).
+
 
 
